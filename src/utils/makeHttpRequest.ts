@@ -53,26 +53,38 @@ export default function makeHttpRequest(args?: Options) {
   return new Promise((resolve: PromiseHandler, reject: PromiseHandler) => {
     // @ts-ignore
     const xhr = new XMLHttpRequest(testMethod);
+
+    const tOut = setTimeout(() => {
+      xhr.abort();
+      reject({
+        status: 500,
+      });
+    }, timeout);
+
     xhr.open(method, url);
     xhr.timeout = timeout;
     xhr.onload = function onLoad() {
       // 3xx is a valid response for us, since the server was reachable
       if (this.status >= 200 && this.status < 400) {
+        clearTimeout(tOut);
         resolve({
           status: this.status,
         });
       } else {
+        clearTimeout(tOut);
         reject({
           status: this.status,
         });
       }
     };
     xhr.onerror = function onError() {
+      clearTimeout(tOut);
       reject({
         status: this.status,
       });
     };
     xhr.ontimeout = function onTimeOut() {
+      clearTimeout(tOut);
       reject({
         status: this.status,
       });

@@ -5,7 +5,7 @@ npm-debug.log
 #jest
 coverage/
 .jest/
-dist/
+# dist/
 
 # OSX
 #

@@ -363,6 +363,44 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "JH108",
+      "name": "Jesse Hill",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14010157?v=4",
+      "profile": "https://github.com/JH108",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ugurakkurt",
+      "name": "ugur akkurt",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12188837?v=4",
+      "profile": "https://github.com/ugurakkurt",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "caiangums",
+      "name": "Ilê Caian",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7551787?v=4",
+      "profile": "https://github.com/caiangums",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "sbelzile-nexapp",
+      "name": "Sébastien Belzile",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67745993?v=4",
+      "profile": "https://github.com/sbelzile-nexapp",
+      "contributions": [
+        "doc",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -9,6 +9,7 @@ import NetworkConnectivity, {
 import { clear, setup } from '../src/utils/checkConnectivityInterval';
 import checkInternetAccess from '../src/utils/checkInternetAccess';
 import entries from '../src/utils/objectEntries';
+import { DEFAULT_CUSTOM_HEADERS } from '../src/utils/constants';
 
 type OptionalProps = Omit<RequiredProps, 'children'>;
 type GetElementParams<P = any> = {
@@ -87,7 +88,7 @@ describe('NetworkConnectivity', () => {
   it('passes the connection state into the FACC', () => {
     const children = jest.fn();
     shallow(getElement({ props: { children } }));
-    expect(children).toHaveBeenCalledWith({ isConnected: true });
+    expect(children).toHaveBeenCalledWith({ isConnected: null });
   });
 
   describe('componentDidMount', () => {
@@ -270,6 +271,7 @@ describe('NetworkConnectivity', () => {
         pingServerUrl: 'dummy.com',
         httpMethod: 'OPTIONS' as 'OPTIONS',
         children: ChildrenComponent,
+        customHeaders: DEFAULT_CUSTOM_HEADERS,
       };
       AppState.currentState = 'active';
       const wrapper = shallow<NetworkConnectivity>(
@@ -283,6 +285,7 @@ describe('NetworkConnectivity', () => {
         url: props.pingServerUrl,
         timeout: props.pingTimeout,
         method: props.httpMethod,
+        customHeaders: props.customHeaders,
       });
       expect(mockHandleConnectivityChange).toHaveBeenCalledWith({
         isConnected: true,

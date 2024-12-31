@@ -25,7 +25,7 @@ export interface NetworkState extends ConnectivityState {
 }
 
 export type ConnectivityState = {
-  isConnected: boolean;
+  isConnected: boolean | null;
 };
 
 export type HTTPMethod = 'HEAD' | 'OPTIONS';
@@ -40,6 +40,11 @@ export type ConnectivityArgs = {
   pingOnlyIfOffline: boolean;
   pingInBackground: boolean;
   httpMethod: HTTPMethod;
+  customHeaders?: HTTPHeaders;
 };
 
 export type SemaphoreColor = 'RED' | 'GREEN';
+
+export type HTTPHeaders = {
+  [key: string]: string;
+};

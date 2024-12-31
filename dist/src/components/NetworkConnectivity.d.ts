@@ -5,7 +5,7 @@ export declare type RequiredProps = {
     children: (state: ConnectivityState) => React.ReactNode;
 } & DefaultProps;
 export declare type DefaultProps = ConnectivityArgs & {
-    onConnectivityChange: (isConnected: boolean) => void;
+    onConnectivityChange: (isConnected: boolean | null) => void;
 };
 declare class NetworkConnectivity extends React.PureComponent<RequiredProps, ConnectivityState> {
     private unsubscribe;
@@ -18,6 +18,7 @@ declare class NetworkConnectivity extends React.PureComponent<RequiredProps, Con
         pingOnlyIfOffline: boolean;
         pingInBackground: boolean;
         httpMethod: import("../types").HTTPMethod;
+        customHeaders?: import("../types").HTTPHeaders | undefined;
     };
     constructor(props: RequiredProps);
     componentDidMount(): Promise<void>;

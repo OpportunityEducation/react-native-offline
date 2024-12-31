@@ -20,7 +20,7 @@ export interface NetworkState extends ConnectivityState {
     actionQueue: EnqueuedAction[];
 }
 export declare type ConnectivityState = {
-    isConnected: boolean;
+    isConnected: boolean | null;
 };
 export declare type HTTPMethod = 'HEAD' | 'OPTIONS';
 export declare type AddUndefined<T> = {
@@ -34,5 +34,9 @@ export declare type ConnectivityArgs = {
     pingOnlyIfOffline: boolean;
     pingInBackground: boolean;
     httpMethod: HTTPMethod;
+    customHeaders?: HTTPHeaders;
 };
 export declare type SemaphoreColor = 'RED' | 'GREEN';
+export declare type HTTPHeaders = {
+    [key: string]: string;
+};

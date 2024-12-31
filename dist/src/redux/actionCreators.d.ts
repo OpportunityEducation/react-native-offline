@@ -1,7 +1,7 @@
 import { EnqueuedAction, SemaphoreColor } from '../types';
-export declare const connectionChange: (isConnected: boolean) => {
+export declare const connectionChange: (isConnected: boolean | null) => {
     type: "@@network-connectivity/CONNECTION_CHANGE";
-    payload: boolean;
+    payload: boolean | null;
 };
 export declare const fetchOfflineMode: (action: EnqueuedAction) => {
     type: "@@network-connectivity/FETCH_OFFLINE_MODE";

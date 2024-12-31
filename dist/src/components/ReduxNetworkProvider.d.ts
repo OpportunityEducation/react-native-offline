@@ -6,17 +6,19 @@ interface AppState {
 }
 declare type OwnProps = ConnectivityArgs;
 interface StateProps {
-    isConnected: boolean;
+    isConnected: boolean | null;
     dispatch: Dispatch;
 }
-declare type Props = OwnProps & StateProps;
+declare type Props = OwnProps & StateProps & {
+    children: React.ReactNode;
+};
 declare class ReduxNetworkProvider extends React.Component<Props> {
     static defaultProps: ConnectivityArgs;
-    handleConnectivityChange: (isConnected: boolean) => void;
+    handleConnectivityChange: (isConnected: boolean | null) => void;
     render(): JSX.Element;
 }
 declare const mapStateToProps: (state: AppState) => {
-    isConnected: boolean;
+    isConnected: boolean | null;
 };
-declare const ConnectedReduxNetworkProvider: import("react-redux").ConnectedComponent<typeof ReduxNetworkProvider, Pick<Props, "pingTimeout" | "pingServerUrl" | "shouldPing" | "pingInterval" | "pingOnlyIfOffline" | "pingInBackground" | "httpMethod">>;
+declare const ConnectedReduxNetworkProvider: import("react-redux").ConnectedComponent<typeof ReduxNetworkProvider, Pick<Props, "children" | "pingTimeout" | "pingServerUrl" | "shouldPing" | "pingInterval" | "pingOnlyIfOffline" | "pingInBackground" | "httpMethod" | "customHeaders">>;
 export { ConnectedReduxNetworkProvider as default, ReduxNetworkProvider, mapStateToProps, };

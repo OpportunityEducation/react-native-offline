@@ -28,7 +28,7 @@ declare const _default: (comparisonFn?: ComparisonFn) => (state: NetworkState | 
     meta: import("../types").MetaProps;
 } | {
     type: "@@network-connectivity/CONNECTION_CHANGE";
-    payload: boolean;
+    payload: boolean | null;
 } | {
     type: "@@network-connectivity/REMOVE_FROM_ACTION_QUEUE";
     payload: EnqueuedAction;

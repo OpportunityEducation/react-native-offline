@@ -7,6 +7,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 var reactNative = require('react-native');
+var NetInfo = _interopDefault(require('@react-native-community/netinfo'));
 var reactRedux = require('react-redux');
 var reduxSaga = require('redux-saga');
 
@@ -1958,6 +1959,7 @@ var CACHE_HEADER_VALUE = 'no-cache, no-store, must-revalidate';
 var DEFAULT_TIMEOUT = 10000;
 var DEFAULT_PING_SERVER_URL = 'https://www.google.com/';
 var DEFAULT_HTTP_METHOD = 'HEAD';
+var DEFAULT_CUSTOM_HEADERS = {};
 var SEMAPHORE_COLOR = {
     RED: 'RED',
     GREEN: 'GREEN',
@@ -1970,6 +1972,7 @@ var DEFAULT_ARGS = {
     pingOnlyIfOffline: false,
     pingInBackground: false,
     httpMethod: DEFAULT_HTTP_METHOD,
+    customHeaders: DEFAULT_CUSTOM_HEADERS,
 };
 
 /**
@@ -2980,9 +2983,9 @@ var Promise$1 = _getNative(_root, 'Promise');
 var _Promise = Promise$1;
 
 /* Built-in method references that are verified to be native. */
-var Set$1 = _getNative(_root, 'Set');
+var Set = _getNative(_root, 'Set');
 
-var _Set = Set$1;
+var _Set = Set;
 
 /* Built-in method references that are verified to be native. */
 var WeakMap = _getNative(_root, 'WeakMap');
@@ -3257,871 +3260,6 @@ function networkSelector(state) {
     return state.network;
 }
 
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-var arrayWithHoles = _arrayWithHoles;
-
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-var iterableToArrayLimit = _iterableToArrayLimit;
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-
-  return arr2;
-}
-
-var arrayLikeToArray = _arrayLikeToArray;
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(n);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
-}
-
-var unsupportedIterableToArray = _unsupportedIterableToArray;
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-var nonIterableRest = _nonIterableRest;
-
-function _slicedToArray(arr, i) {
-  return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
-}
-
-var slicedToArray = _slicedToArray;
-
-function _defineProperty$1(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-var defineProperty$1 = _defineProperty$1;
-
-function _objectSpread(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? Object(arguments[i]) : {};
-    var ownKeys = Object.keys(source);
-
-    if (typeof Object.getOwnPropertySymbols === 'function') {
-      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-      }));
-    }
-
-    ownKeys.forEach(function (key) {
-      defineProperty$1(target, key, source[key]);
-    });
-  }
-
-  return target;
-}
-
-var objectSpread = _objectSpread;
-
-var DEFAULT_CONFIGURATION = {reachabilityUrl:'https://clients3.google.com/generate_204',reachabilityTest:function reachabilityTest(response){return Promise.resolve(response.status===204);},reachabilityShortTimeout:5*1000,reachabilityLongTimeout:60*1000,reachabilityRequestTimeout:15*1000};
-
-var runtime_1 = createCommonjsModule(function (module) {
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var runtime = (function (exports) {
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined$1; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  exports.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  exports.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  exports.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  exports.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator, PromiseImpl) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return PromiseImpl.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return PromiseImpl.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new PromiseImpl(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  exports.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
-    if (PromiseImpl === void 0) PromiseImpl = Promise;
-
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList),
-      PromiseImpl
-    );
-
-    return exports.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined$1) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        // Note: ["return"] must be used for ES3 parsing compatibility.
-        if (delegate.iterator["return"]) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined$1;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined$1;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  exports.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined$1;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  exports.values = values;
-
-  function doneResult() {
-    return { value: undefined$1, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined$1;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined$1;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined$1;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined$1;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined$1;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-
-  // Regardless of whether this script is executing as a CommonJS module
-  // or not, return the runtime object so that we can declare the variable
-  // regeneratorRuntime in the outer scope, which allows this module to be
-  // injected easily by `bin/regenerator --include-runtime script.js`.
-  return exports;
-
-}(
-  // If this script is executing as a CommonJS module, use module.exports
-  // as the regeneratorRuntime namespace. Otherwise create a new empty
-  // object. Either way, the resulting object will be used to initialize
-  // the regeneratorRuntime variable at the top of this file.
-   module.exports 
-));
-
-try {
-  regeneratorRuntime = runtime;
-} catch (accidentalStrictMode) {
-  // This module should not be running in strict mode, so the above
-  // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
-  // strict mode using a global Function call. This could conceivably fail
-  // if a Content Security Policy forbids using Function, but in that case
-  // the proper solution is to fix the accidental strict mode problem. If
-  // you've misconfigured your bundler to force strict mode and applied a
-  // CSP to forbid Function, and you're not willing to fix either of those
-  // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
-}
-});
-
-var regenerator = runtime_1;
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-var classCallCheck = _classCallCheck;
-
-var RNCNetInfo=reactNative.NativeModules.RNCNetInfo;
-
-if(!RNCNetInfo){throw new Error("@react-native-community/netinfo: NativeModule.RNCNetInfo is null. To fix this issue try these steps:\n\n\u2022 Run `react-native link @react-native-community/netinfo` in the project root.\n\u2022 Rebuild and re-run the app.\n\u2022 If you are using CocoaPods on iOS, run `pod install` in the `ios` directory and then rebuild and re-run the app. You may also need to re-open Xcode to get the new pods.\n\u2022 Check that the library was linked correctly when you used the link command by running through the manual installation instructions in the README.\n* If you are getting this error while unit testing you need to mock the native module. Follow the guide in the README.\n\nIf none of these fix the issue, please open an issue on the Github repository: https://github.com/react-native-community/react-native-netinfo");}var nativeEventEmitter=null;var NativeInterface = objectSpread({},RNCNetInfo,{get eventEmitter(){if(!nativeEventEmitter){nativeEventEmitter=new reactNative.NativeEventEmitter(RNCNetInfo);}return nativeEventEmitter;}});
-
-var InternetReachability=function InternetReachability(configuration,listener){var _this=this;classCallCheck(this,InternetReachability);this._isInternetReachable=undefined;this._currentInternetReachabilityCheckHandler=null;this._currentTimeoutHandle=null;this._setIsInternetReachable=function(isInternetReachable){if(_this._isInternetReachable===isInternetReachable){return;}_this._isInternetReachable=isInternetReachable;_this._listener(_this._isInternetReachable);};this._setExpectsConnection=function(expectsConnection){if(_this._currentInternetReachabilityCheckHandler!==null){_this._currentInternetReachabilityCheckHandler.cancel();_this._currentInternetReachabilityCheckHandler=null;}if(_this._currentTimeoutHandle!==null){clearTimeout(_this._currentTimeoutHandle);_this._currentTimeoutHandle=null;}if(expectsConnection){if(!_this._isInternetReachable){_this._setIsInternetReachable(null);}_this._currentInternetReachabilityCheckHandler=_this._checkInternetReachability();}else {_this._setIsInternetReachable(false);}};this._checkInternetReachability=function(){var responsePromise=fetch(_this._configuration.reachabilityUrl,{method:'HEAD',cache:'no-cache'});var timeoutHandle;var timeoutPromise=new Promise(function(_,reject){timeoutHandle=setTimeout(function(){return reject('timedout');},_this._configuration.reachabilityRequestTimeout);});var cancel=function cancel(){};var cancelPromise=new Promise(function(_,reject){cancel=function cancel(){return reject('canceled');};});var promise=Promise.race([responsePromise,timeoutPromise,cancelPromise]).then(function(response){return _this._configuration.reachabilityTest(response);}).then(function(result){_this._setIsInternetReachable(result);var nextTimeoutInterval=_this._isInternetReachable?_this._configuration.reachabilityLongTimeout:_this._configuration.reachabilityShortTimeout;_this._currentTimeoutHandle=setTimeout(_this._checkInternetReachability,nextTimeoutInterval);}).catch(function(error){if(error!=='canceled'){_this._setIsInternetReachable(false);_this._currentTimeoutHandle=setTimeout(_this._checkInternetReachability,_this._configuration.reachabilityShortTimeout);}}).then(function(){clearTimeout(timeoutHandle);},function(error){clearTimeout(timeoutHandle);throw error;});return {promise:promise,cancel:cancel};};this.update=function(state){if(typeof state.isInternetReachable==='boolean'){_this._setIsInternetReachable(state.isInternetReachable);}else {_this._setExpectsConnection(state.isConnected);}};this.currentState=function(){return _this._isInternetReachable;};this.tearDown=function(){if(_this._currentInternetReachabilityCheckHandler!==null){_this._currentInternetReachabilityCheckHandler.cancel();_this._currentInternetReachabilityCheckHandler=null;}if(_this._currentTimeoutHandle!==null){clearTimeout(_this._currentTimeoutHandle);_this._currentTimeoutHandle=null;}};this._configuration=configuration;this._listener=listener;};
-
-var DEVICE_CONNECTIVITY_EVENT='netInfo.networkStatusDidChange';
-
-var State=function State(configuration){var _this=this;classCallCheck(this,State);this._nativeEventSubscription=null;this._subscriptions=new Set();this._latestState=null;this._handleNativeStateUpdate=function(state){_this._internetReachability.update(state);var convertedState=_this._convertState(state);_this._latestState=convertedState;_this._subscriptions.forEach(function(handler){return handler(convertedState);});};this._handleInternetReachabilityUpdate=function(isInternetReachable){if(!_this._latestState){return;}var nextState=objectSpread({},_this._latestState,{isInternetReachable:isInternetReachable});_this._latestState=nextState;_this._subscriptions.forEach(function(handler){return handler(nextState);});};this._fetchCurrentState=function _callee(requestedInterface){var state,convertedState;return regenerator.async(function _callee$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.next=2;return regenerator.awrap(NativeInterface.getCurrentState(requestedInterface));case 2:state=_context.sent;_this._internetReachability.update(state);convertedState=_this._convertState(state);if(!requestedInterface){_this._latestState=convertedState;}return _context.abrupt("return",convertedState);case 7:case"end":return _context.stop();}}},null,this);};this._convertState=function(input){if(typeof input.isInternetReachable==='boolean'){return input;}else {return objectSpread({},input,{isInternetReachable:_this._internetReachability.currentState()});}};this.latest=function(requestedInterface){if(requestedInterface){return _this._fetchCurrentState(requestedInterface);}else if(_this._latestState){return Promise.resolve(_this._latestState);}else {return _this._fetchCurrentState();}};this.add=function(handler){_this._subscriptions.add(handler);if(_this._latestState){handler(_this._latestState);}else {_this.latest().then(handler);}};this.remove=function(handler){_this._subscriptions.delete(handler);};this.tearDown=function(){if(_this._internetReachability){_this._internetReachability.tearDown();}if(_this._nativeEventSubscription){_this._nativeEventSubscription.remove();}_this._subscriptions.clear();};this._internetReachability=new InternetReachability(configuration,this._handleInternetReachabilityUpdate);this._nativeEventSubscription=NativeInterface.eventEmitter.addListener(DEVICE_CONNECTIVITY_EVENT,this._handleNativeStateUpdate);this._fetchCurrentState();};
-
-var NetInfoStateType;(function(NetInfoStateType){NetInfoStateType["unknown"]="unknown";NetInfoStateType["none"]="none";NetInfoStateType["cellular"]="cellular";NetInfoStateType["wifi"]="wifi";NetInfoStateType["bluetooth"]="bluetooth";NetInfoStateType["ethernet"]="ethernet";NetInfoStateType["wimax"]="wimax";NetInfoStateType["vpn"]="vpn";NetInfoStateType["other"]="other";})(NetInfoStateType||(NetInfoStateType={}));var NetInfoCellularGeneration;(function(NetInfoCellularGeneration){NetInfoCellularGeneration["2g"]="2g";NetInfoCellularGeneration["3g"]="3g";NetInfoCellularGeneration["4g"]="4g";})(NetInfoCellularGeneration||(NetInfoCellularGeneration={}));
-
-var _configuration=DEFAULT_CONFIGURATION;var _state=null;var createState=function createState(){return new State(_configuration);};function configure(configuration){_configuration=objectSpread({},DEFAULT_CONFIGURATION,configuration);if(_state){_state.tearDown();_state=createState();}}function fetch$1(requestedInterface){if(!_state){_state=createState();}return _state.latest(requestedInterface);}function addEventListener(listener){if(!_state){_state=createState();}_state.add(listener);return function(){_state&&_state.remove(listener);};}function useNetInfo(configuration){if(configuration){configure(configuration);}var _useState=React.useState({type:NetInfoStateType.unknown,isConnected:false,isInternetReachable:false,details:null}),_useState2=slicedToArray(_useState,2),netInfo=_useState2[0],setNetInfo=_useState2[1];React.useEffect(function(){return addEventListener(setNetInfo);},[]);return netInfo;}var NetInfo = {configure:configure,fetch:fetch$1,addEventListener:addEventListener,useNetInfo:useNetInfo};
-
 var interval = null;
 function setup(checkFn, t) {
     if (t > 0 && !interval) {
@@ -4144,9 +3282,10 @@ var DEFAULT_OPTIONS = {
     method: DEFAULT_HTTP_METHOD,
     url: DEFAULT_PING_SERVER_URL,
     timeout: DEFAULT_TIMEOUT,
+    customHeaders: DEFAULT_CUSTOM_HEADERS,
 };
 function makeHttpRequest(args) {
-    var _a = args || DEFAULT_OPTIONS, _b = _a.method, method = _b === void 0 ? DEFAULT_HTTP_METHOD : _b, _c = _a.url, url = _c === void 0 ? DEFAULT_PING_SERVER_URL : _c, _d = _a.timeout, timeout = _d === void 0 ? DEFAULT_TIMEOUT : _d, testMethod = _a.testMethod;
+    var _a = args || DEFAULT_OPTIONS, _b = _a.method, method = _b === void 0 ? DEFAULT_HTTP_METHOD : _b, _c = _a.url, url = _c === void 0 ? DEFAULT_PING_SERVER_URL : _c, _d = _a.timeout, timeout = _d === void 0 ? DEFAULT_TIMEOUT : _d, _e = _a.customHeaders, customHeaders = _e === void 0 ? DEFAULT_CUSTOM_HEADERS : _e, testMethod = _a.testMethod;
     return new Promise(function (resolve, reject) {
         // @ts-ignore
         var xhr = new XMLHttpRequest(testMethod);
@@ -4185,9 +3324,10 @@ function makeHttpRequest(args) {
                 status: this.status,
             });
         };
-        Object.keys(headers).forEach(function (key) {
+        var combinedHeaders = __assign(__assign({}, headers), customHeaders);
+        Object.keys(combinedHeaders).forEach(function (key) {
             var k = key;
-            xhr.setRequestHeader(k, headers[k]);
+            xhr.setRequestHeader(k, combinedHeaders[k]);
         });
         xhr.send(null);
     });
@@ -4197,10 +3337,11 @@ var DEFAULT_ARGUMENTS = {
     timeout: DEFAULT_TIMEOUT,
     url: DEFAULT_PING_SERVER_URL,
     method: DEFAULT_HTTP_METHOD,
+    customHeaders: DEFAULT_CUSTOM_HEADERS,
 };
 function checkInternetAccess(args) {
     var _this = this;
-    var _a = args || DEFAULT_ARGUMENTS, _b = _a.timeout, timeout = _b === void 0 ? DEFAULT_TIMEOUT : _b, _c = _a.url, url = _c === void 0 ? DEFAULT_PING_SERVER_URL : _c, _d = _a.method, method = _d === void 0 ? DEFAULT_HTTP_METHOD : _d;
+    var _a = args || DEFAULT_ARGUMENTS, _b = _a.timeout, timeout = _b === void 0 ? DEFAULT_TIMEOUT : _b, _c = _a.url, url = _c === void 0 ? DEFAULT_PING_SERVER_URL : _c, _d = _a.method, method = _d === void 0 ? DEFAULT_HTTP_METHOD : _d, _e = _a.customHeaders, customHeaders = _e === void 0 ? DEFAULT_CUSTOM_HEADERS : _e;
     return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
         var e_1;
         return __generator(this, function (_a) {
@@ -4211,6 +3352,7 @@ function checkInternetAccess(args) {
                             method: method,
                             url: url,
                             timeout: timeout,
+                            customHeaders: customHeaders,
                         })];
                 case 1:
                     _a.sent();
@@ -4266,11 +3408,11 @@ var NetworkConnectivity = /** @class */ (function (_super) {
             }
         };
         _this.checkInternet = function () { return __awaiter(_this, void 0, void 0, function () {
-            var _a, pingInBackground, pingTimeout, pingServerUrl, httpMethod, _b, hasInternetAccess, netInfoState;
+            var _a, pingInBackground, pingTimeout, pingServerUrl, httpMethod, customHeaders, _b, hasInternetAccess, netInfoState;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        _a = this.props, pingInBackground = _a.pingInBackground, pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, httpMethod = _a.httpMethod;
+                        _a = this.props, pingInBackground = _a.pingInBackground, pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, httpMethod = _a.httpMethod, customHeaders = _a.customHeaders;
                         if (pingInBackground === false && reactNative.AppState.currentState !== 'active') {
                             return [2 /*return*/]; // <-- Return early as we don't care about connectivity if app is not in foreground.
                         }
@@ -4279,6 +3421,7 @@ var NetworkConnectivity = /** @class */ (function (_super) {
                                     url: pingServerUrl,
                                     timeout: pingTimeout,
                                     method: httpMethod,
+                                    customHeaders: customHeaders,
                                 }),
                                 NetInfo.fetch(),
                             ])];
@@ -4305,7 +3448,7 @@ var NetworkConnectivity = /** @class */ (function (_super) {
         };
         validateProps(props);
         _this.state = {
-            isConnected: true,
+            isConnected: null,
         };
         return _this;
     }
@@ -4409,6 +3552,15 @@ function NetworkConsumer(_a) {
         }
         return children(context);
     }));
+}
+
+function useIsConnected() {
+    var context = React.useContext(NetworkContext);
+    if (!context) {
+        throw new Error('useIsConnected should be used within NetworkProvider. ' +
+            'Make sure you are rendering a NetworkProvider at the top of your component hierarchy');
+    }
+    return context.isConnected;
 }
 
 /** Used to compose bitmasks for value comparisons. */
@@ -5077,7 +4229,7 @@ function createNetworkMiddleware(_a) {
             var releaseQueue = createReleaseQueue(getState, next, queueReleaseThrottle, shouldDequeueSelector);
             validateParams(regexActionType, actionTypes);
             var shouldInterceptAction = checkIfActionShouldBeIntercepted(action, regexActionType, actionTypes);
-            if (shouldInterceptAction && isConnected === false) {
+            if (shouldInterceptAction && isConnected !== true) {
                 // Offline, preventing the original action from being dispatched.
                 // Dispatching an internal action instead.
                 return next(fetchOfflineMode(action));
@@ -5396,10 +4548,11 @@ function createIntervalChannel(interval, channelFn) {
  * @param pingServerUrl
  * @param shouldPing
  * @param httpMethod
+ * @param customHeaders
  */
 function netInfoChangeSaga(_a) {
     var networkState, chan, isConnected;
-    var pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, shouldPing = _a.shouldPing, httpMethod = _a.httpMethod;
+    var pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, shouldPing = _a.shouldPing, httpMethod = _a.httpMethod, customHeaders = _a.customHeaders;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -5413,6 +4566,7 @@ function netInfoChangeSaga(_a) {
                         pingTimeout: pingTimeout,
                         pingServerUrl: pingServerUrl,
                         httpMethod: httpMethod,
+                        customHeaders: customHeaders,
                     })];
             case 2:
                 _b.sent();
@@ -5434,6 +4588,7 @@ function netInfoChangeSaga(_a) {
                         pingTimeout: pingTimeout,
                         pingServerUrl: pingServerUrl,
                         httpMethod: httpMethod,
+                        customHeaders: customHeaders,
                     })];
             case 8:
                 _b.sent();
@@ -5456,10 +4611,11 @@ function netInfoChangeSaga(_a) {
  * @param pingTimeout
  * @param pingServerUrl
  * @param httpMethod
+ * @param customHeaders
  * @returns {IterableIterator<ForkEffect | *>}
  */
 function connectionHandler(_a) {
-    var shouldPing = _a.shouldPing, isConnected = _a.isConnected, pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, httpMethod = _a.httpMethod;
+    var shouldPing = _a.shouldPing, isConnected = _a.isConnected, pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, httpMethod = _a.httpMethod, customHeaders = _a.customHeaders;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -5469,6 +4625,7 @@ function connectionHandler(_a) {
                         pingServerUrl: pingServerUrl,
                         httpMethod: httpMethod,
                         pingInBackground: false,
+                        customHeaders: customHeaders,
                     })];
             case 1:
                 _b.sent();
@@ -5489,11 +4646,12 @@ function connectionHandler(_a) {
  * @param pingOnlyIfOffline
  * @param pingInBackground
  * @param httpMethod
+ * @param customHeaders
  * @returns {IterableIterator<*>}
  */
 function connectionIntervalSaga(_a) {
     var chan, state;
-    var pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, pingInterval = _a.pingInterval, pingOnlyIfOffline = _a.pingOnlyIfOffline, pingInBackground = _a.pingInBackground, httpMethod = _a.httpMethod;
+    var pingTimeout = _a.pingTimeout, pingServerUrl = _a.pingServerUrl, pingInterval = _a.pingInterval, pingOnlyIfOffline = _a.pingOnlyIfOffline, pingInBackground = _a.pingInBackground, httpMethod = _a.httpMethod, customHeaders = _a.customHeaders;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, call(createIntervalChannel, pingInterval, intervalChannelFn)];
@@ -5516,6 +4674,7 @@ function connectionIntervalSaga(_a) {
                         pingServerUrl: pingServerUrl,
                         httpMethod: httpMethod,
                         pingInBackground: pingInBackground,
+                        customHeaders: customHeaders,
                     })];
             case 6:
                 _b.sent();
@@ -5538,10 +4697,11 @@ function connectionIntervalSaga(_a) {
  * @param pingTimeout
  * @param httpMethod
  * @param pingInBackground
+ * @param customHeaders
  */
 function checkInternetAccessSaga(_a) {
     var hasInternetAccess;
-    var pingServerUrl = _a.pingServerUrl, pingTimeout = _a.pingTimeout, httpMethod = _a.httpMethod, pingInBackground = _a.pingInBackground;
+    var pingServerUrl = _a.pingServerUrl, pingTimeout = _a.pingTimeout, httpMethod = _a.httpMethod, pingInBackground = _a.pingInBackground, customHeaders = _a.customHeaders;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -5552,6 +4712,7 @@ function checkInternetAccessSaga(_a) {
                         url: pingServerUrl,
                         timeout: pingTimeout,
                         method: httpMethod,
+                        customHeaders: customHeaders,
                     })];
             case 1:
                 hasInternetAccess = _b.sent();
@@ -5595,18 +4756,20 @@ function handleConnectivityChange(hasInternetAccess) {
  * @param pingOnlyIfOffline
  * @param pingInBackground
  * @param httpMethod
+ * @param customHeaders
  */
 function networkSaga(args) {
-    var _a, _b, pingTimeout, _c, pingServerUrl, _d, pingInterval, _e, shouldPing, _f, pingOnlyIfOffline, _g, pingInBackground, _h, httpMethod;
+    var _a, _b, pingTimeout, _c, pingServerUrl, _d, pingInterval, _e, shouldPing, _f, pingOnlyIfOffline, _g, pingInBackground, _h, httpMethod, customHeaders;
     return __generator(this, function (_j) {
         switch (_j.label) {
             case 0:
-                _a = args || DEFAULT_ARGS, _b = _a.pingTimeout, pingTimeout = _b === void 0 ? DEFAULT_TIMEOUT : _b, _c = _a.pingServerUrl, pingServerUrl = _c === void 0 ? DEFAULT_PING_SERVER_URL : _c, _d = _a.pingInterval, pingInterval = _d === void 0 ? 0 : _d, _e = _a.shouldPing, shouldPing = _e === void 0 ? true : _e, _f = _a.pingOnlyIfOffline, pingOnlyIfOffline = _f === void 0 ? false : _f, _g = _a.pingInBackground, pingInBackground = _g === void 0 ? false : _g, _h = _a.httpMethod, httpMethod = _h === void 0 ? DEFAULT_HTTP_METHOD : _h;
+                _a = args || DEFAULT_ARGS, _b = _a.pingTimeout, pingTimeout = _b === void 0 ? DEFAULT_TIMEOUT : _b, _c = _a.pingServerUrl, pingServerUrl = _c === void 0 ? DEFAULT_PING_SERVER_URL : _c, _d = _a.pingInterval, pingInterval = _d === void 0 ? 0 : _d, _e = _a.shouldPing, shouldPing = _e === void 0 ? true : _e, _f = _a.pingOnlyIfOffline, pingOnlyIfOffline = _f === void 0 ? false : _f, _g = _a.pingInBackground, pingInBackground = _g === void 0 ? false : _g, _h = _a.httpMethod, httpMethod = _h === void 0 ? DEFAULT_HTTP_METHOD : _h, customHeaders = _a.customHeaders;
                 return [4 /*yield*/, fork(netInfoChangeSaga, {
                         pingTimeout: pingTimeout,
                         pingServerUrl: pingServerUrl,
                         shouldPing: shouldPing,
                         httpMethod: httpMethod,
+                        customHeaders: customHeaders,
                     })];
             case 1:
                 _j.sent();
@@ -5618,6 +4781,7 @@ function networkSaga(args) {
                         pingOnlyIfOffline: pingOnlyIfOffline,
                         pingInBackground: pingInBackground,
                         httpMethod: httpMethod,
+                        customHeaders: customHeaders,
                     })];
             case 2:
                 _j.sent();
@@ -5635,11 +4799,12 @@ function networkSaga(args) {
  * @param method
  * @returns {Promise<boolean>}
  */
-function checkInternetConnection(url, timeout, shouldPing, method) {
+function checkInternetConnection(url, timeout, shouldPing, method, customHeaders) {
     if (url === void 0) { url = DEFAULT_PING_SERVER_URL; }
     if (timeout === void 0) { timeout = DEFAULT_TIMEOUT; }
     if (shouldPing === void 0) { shouldPing = true; }
     if (method === void 0) { method = DEFAULT_HTTP_METHOD; }
+    if (customHeaders === void 0) { customHeaders = DEFAULT_CUSTOM_HEADERS; }
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
@@ -5653,6 +4818,7 @@ function checkInternetConnection(url, timeout, shouldPing, method) {
                                         timeout: timeout,
                                         url: url,
                                         method: method,
+                                        customHeaders: customHeaders,
                                     })];
                             case 1:
                                 hasInternetAccess = _a.sent();
@@ -5678,3 +4844,4 @@ exports.networkSaga = networkSaga;
 exports.offlineActionCreators = actionCreators;
 exports.offlineActionTypes = actionTypes;
 exports.reducer = reducer;
+exports.useIsConnected = useIsConnected;
